@@ -1,0 +1,145 @@
+// Source schema. `scripts/prepare-schema.mjs` turns this into schema.prisma,
+// choosing the provider from DATABASE_URL (file: → sqlite, mysql:// → mysql).
+// {{PROVIDER}} and {{TEXT}} are replaced by that script; edit this file, not schema.prisma.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "{{PROVIDER}}"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  phone        String?
+  passwordHash String
+  role         String   @default("CLIENT") // CLIENT | ADMIN
+  locale       String   @default("vi")
+  createdAt    DateTime @default(now())
+
+  managed     ManagedAccount?
+  watchlist   WatchlistItem[]
+  holdings    PersonalHolding[]
+  screens     SavedScreen[]
+  posts       Post[]
+}
+
+// Portfolio managed by Lim Investment on the client's behalf (entered by admins).
+model ManagedAccount {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  strategy      String
+  inceptionDate DateTime
+  cash          Float    @default(0)
+  note          String?  {{TEXT}}
+
+  holdings ManagedHolding[]
+  navs     NavPoint[]
+  reports  Report[]
+}
+
+model ManagedHolding {
+  id        String         @id @default(cuid())
+  accountId String
+  account   ManagedAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  symbol    String
+  quantity  Int
+  avgCost   Float // VND per share
+
+  @@unique([accountId, symbol])
+}
+
+model NavPoint {
+  id        String         @id @default(cuid())
+  accountId String
+  account   ManagedAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  date      DateTime
+  nav       Float // total account value in VND
+
+  @@unique([accountId, date])
+}
+
+model Report {
+  id        String         @id @default(cuid())
+  accountId String
+  account   ManagedAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  title     String
+  url       String
+  date      DateTime
+}
+
+model WatchlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, symbol])
+}
+
+// Positions the client tracks themselves.
+model PersonalHolding {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol   String
+  quantity Int
+  avgPrice Float // VND per share
+
+  @@unique([userId, symbol])
+}
+
+model SavedScreen {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  kind      String // screener | fundamental | technical
+  query     String   {{TEXT}} // URL search string of the filters
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  category    String // market | company | macro | education
+  published   Boolean  @default(false)
+  publishedAt DateTime @default(now())
+  authorId    String?
+  author      User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  translations PostTranslation[]
+}
+
+model PostTranslation {
+  id      String @id @default(cuid())
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  locale  String
+  title   String
+  excerpt String {{TEXT}}
+  body    String {{TEXT}}
+
+  @@unique([postId, locale])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  topic     String
+  message   String   {{TEXT}}
+  locale    String
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

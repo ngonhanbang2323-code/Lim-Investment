@@ -1,26 +1,130 @@
 @import "tailwindcss";
 
+/*
+  Lim Investment design tokens.
+  Forest (林) and lim ironwood: deep green for the brand, warm wood for the single accent.
+  Price tones follow the Vietnamese board convention and are only used for market data.
+*/
+@theme {
+  --color-forest: #14382e;
+  --color-forest-deep: #0d261f;
+  --color-forest-soft: #e4ece7;
+  --color-lim: #6b3a26;
+  --color-lim-light: #c08a5f;
+  --color-paper: #f6f7f4;
+  --color-surface: #ffffff;
+  --color-line: #dce0da;
+  --color-line-strong: #b9c0b9;
+  --color-ink: #17201c;
+  --color-ink-muted: #4f5b55;
+  --color-link: #2a6449;
+  --color-danger: #b42318;
+
+  --color-tone-ceil: var(--tone-ceil);
+  --color-tone-up: var(--tone-up);
+  --color-tone-ref: var(--tone-ref);
+  --color-tone-down: var(--tone-down);
+  --color-tone-floor: var(--tone-floor);
+
+  --font-sans: var(--font-body), var(--font-cjk-sans), system-ui, sans-serif;
+  --font-display: var(--font-serif), var(--font-cjk-serif), Georgia, serif;
+
+  --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
+  --text-display--line-height: 1.05;
+  --text-h1: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --text-h1--line-height: 1.12;
+  --text-h2: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --text-h2--line-height: 1.2;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --tone-ceil: #7b1fa2;
+  --tone-up: #087a3c;
+  --tone-ref: #8a5a00;
+  --tone-down: #c0262d;
+  --tone-floor: #0369a1;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Lighter tones for data shown on the dark forest panels. */
+.on-dark {
+  --tone-ceil: #e39bf0;
+  --tone-up: #4cd38a;
+  --tone-ref: #f2c14e;
+  --tone-down: #ff7a75;
+  --tone-floor: #5cc8f5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-lim-light);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.prose-lim p {
+  margin-block: 1em;
+}
+.prose-lim h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+/* Growth rings: draw outward once on load. */
+@keyframes ring-draw {
+  from {
+    stroke-dashoffset: var(--len);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ring {
+  stroke-dasharray: var(--len);
+  animation: ring-draw 1.6s var(--ease-out-soft) both;
+  animation-delay: var(--delay);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+    stroke-dasharray: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }
