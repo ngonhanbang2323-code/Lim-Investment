@@ -14,7 +14,12 @@ type Bar = { time: string; open: number; high: number; low: number; close: numbe
 type Range = "3m" | "6m" | "1y" | "all";
 const SESSIONS: Record<Range, number> = { "3m": 63, "6m": 126, "1y": 250, all: Infinity };
 
-const COLORS = { up: "#087a3c", down: "#c0262d", grid: "#e7eae5", text: "#4f5b55", ma: "#6b3a26" };
+import { cssVar, useEffectiveTheme } from "@/lib/theme";
+
+// Read from the design tokens so the canvas follows the light/dark theme.
+function chartColors() {
+  return { up: cssVar("--tone-up"), down: cssVar("--tone-down"), grid: cssVar("--c-grid"), text: cssVar("--c-ink-muted"), ma: cssVar("--c-lim") };
+}
 
 function toTime(day: string) {
   return (Date.parse(day + "T00:00:00Z") / 1000) as UTCTimestamp;
@@ -38,10 +43,12 @@ export function PriceChart({
   const ref = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const [range, setRange] = useState<Range>("6m");
+  const theme = useEffectiveTheme();
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const COLORS = chartColors();
     const chart = createChart(el, {
       autoSize: true,
       layout: { background: { color: "transparent" }, textColor: COLORS.text, fontFamily: "inherit", attributionLogo: false },
@@ -87,7 +94,7 @@ export function PriceChart({
         bars.map((b, i) => ({
           time: toTime(b.time),
           value: b.volume,
-          color: i && b.close < bars[i - 1].close ? "rgba(192,38,45,0.35)" : "rgba(8,122,60,0.35)",
+          color: (i && b.close < bars[i - 1].close ? COLORS.down : COLORS.up) + "59", // ~35% alpha
         }))
       );
     }
@@ -95,14 +102,14 @@ export function PriceChart({
       chart.remove();
       chartRef.current = null;
     };
-  }, [bars, showVolume, priceDivisor, locale]);
+  }, [bars, showVolume, priceDivisor, locale, theme]);
 
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
     const n = Math.min(SESSIONS[range], bars.length);
     chart.timeScale().setVisibleRange({ from: toTime(bars[bars.length - n].time), to: toTime(bars[bars.length - 1].time) });
-  }, [range, bars]);
+  }, [range, bars, theme]);
 
   return (
     <div>
@@ -113,7 +120,7 @@ export function PriceChart({
             type="button"
             aria-pressed={range === r}
             onClick={() => setRange(r)}
-            className="min-h-9 min-w-11 cursor-pointer rounded-md px-2.5 text-sm font-medium text-ink-muted hover:bg-forest-soft aria-pressed:bg-forest aria-pressed:text-white"
+            className="min-h-9 min-w-11 cursor-pointer rounded-md px-2.5 text-sm font-medium text-ink-muted hover:bg-forest-soft aria-pressed:bg-forest aria-pressed:text-on-forest"
           >
             {rangeLabels[r]}
           </button>

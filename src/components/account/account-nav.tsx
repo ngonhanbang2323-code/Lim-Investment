@@ -15,7 +15,7 @@ export function SectionNav({ items, label }: { items: { href: string; label: str
               <Link
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className="flex min-h-11 items-center whitespace-nowrap rounded-md px-3 text-sm font-medium text-ink-muted hover:bg-forest-soft hover:text-ink aria-[current=page]:bg-forest aria-[current=page]:text-white"
+                className="flex min-h-11 items-center whitespace-nowrap rounded-md px-3 text-sm font-medium text-ink-muted hover:bg-forest-soft hover:text-ink aria-[current=page]:bg-forest aria-[current=page]:text-on-forest"
               >
                 {item.label}
               </Link>

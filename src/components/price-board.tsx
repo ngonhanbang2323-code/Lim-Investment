@@ -60,7 +60,7 @@ export function PriceBoard({ rows, lang, t }: { rows: BoardRow[]; lang: Locale; 
               role="tab"
               aria-selected={filter === key}
               onClick={() => setFilter(key)}
-              className="min-h-10 cursor-pointer rounded-md px-3 text-sm font-medium text-ink-muted hover:bg-forest-soft aria-selected:bg-forest aria-selected:text-white"
+              className="min-h-10 cursor-pointer rounded-md px-3 text-sm font-medium text-ink-muted hover:bg-forest-soft aria-selected:bg-forest aria-selected:text-on-forest"
             >
               {label}
             </button>

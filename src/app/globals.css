@@ -4,21 +4,26 @@
   Lim Investment design tokens.
   Forest (林) and lim ironwood: deep green for the brand, warm wood for the single accent.
   Price tones follow the Vietnamese board convention and are only used for market data.
+
+  Colours are CSS variables with a light and a dark set. The dark set applies when
+  <html data-theme="dark">, or when the visitor has made no choice and the OS is dark.
 */
-@theme {
-  --color-forest: #14382e;
-  --color-forest-deep: #0d261f;
-  --color-forest-soft: #e4ece7;
-  --color-lim: #6b3a26;
-  --color-lim-light: #c08a5f;
-  --color-paper: #f6f7f4;
-  --color-surface: #ffffff;
-  --color-line: #dce0da;
-  --color-line-strong: #b9c0b9;
-  --color-ink: #17201c;
-  --color-ink-muted: #4f5b55;
-  --color-link: #2a6449;
-  --color-danger: #b42318;
+@theme inline {
+  --color-forest: var(--c-forest);
+  --color-forest-hover: var(--c-forest-hover);
+  --color-on-forest: var(--c-on-forest);
+  --color-forest-deep: var(--c-forest-deep);
+  --color-forest-soft: var(--c-forest-soft);
+  --color-lim: var(--c-lim);
+  --color-lim-light: var(--c-lim-light);
+  --color-paper: var(--c-paper);
+  --color-surface: var(--c-surface);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-ink: var(--c-ink);
+  --color-ink-muted: var(--c-ink-muted);
+  --color-link: var(--c-link);
+  --color-danger: var(--c-danger);
 
   --color-tone-ceil: var(--tone-ceil);
   --color-tone-up: var(--tone-up);
@@ -40,6 +45,24 @@
 }
 
 :root {
+  color-scheme: light;
+  --c-forest: #14382e;
+  --c-forest-hover: #0d261f;
+  --c-on-forest: #ffffff;
+  --c-forest-deep: #0d261f;
+  --c-forest-soft: #e4ece7;
+  --c-lim: #6b3a26;
+  --c-lim-light: #c08a5f;
+  --c-paper: #f6f7f4;
+  --c-surface: #ffffff;
+  --c-line: #dce0da;
+  --c-line-strong: #b9c0b9;
+  --c-ink: #17201c;
+  --c-ink-muted: #4f5b55;
+  --c-link: #2a6449;
+  --c-danger: #b42318;
+  --c-grid: #e7eae5;
+
   --tone-ceil: #7b1fa2;
   --tone-up: #087a3c;
   --tone-ref: #8a5a00;
@@ -47,13 +70,94 @@
   --tone-floor: #0369a1;
 }
 
-/* Lighter tones for data shown on the dark forest panels. */
+/* Lighter tones for data on dark surfaces; shared by the dark theme and the forest panels. */
 .on-dark {
   --tone-ceil: #e39bf0;
   --tone-up: #4cd38a;
   --tone-ref: #f2c14e;
   --tone-down: #ff7a75;
   --tone-floor: #5cc8f5;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* Forest flips to a light green so it still reads as text and as a button fill. */
+  --c-forest: #8fcdb0;
+  --c-forest-hover: #aadbc4;
+  --c-on-forest: #0d261f;
+  --c-forest-deep: #0b1d17;
+  --c-forest-soft: #1b2b25;
+  --c-lim: #d9a274;
+  --c-lim-light: #c99366;
+  --c-paper: #0f1614;
+  --c-surface: #16201c;
+  --c-line: #27332e;
+  --c-line-strong: #3d4b45;
+  --c-ink: #e7ece9;
+  --c-ink-muted: #a6b3ad;
+  --c-link: #8fcdb0;
+  --c-danger: #ff8a7a;
+  --c-grid: #24302b;
+
+  --tone-ceil: #e39bf0;
+  --tone-up: #4cd38a;
+  --tone-ref: #f2c14e;
+  --tone-down: #ff7a75;
+  --tone-floor: #5cc8f5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    /* Forest flips to a light green so it still reads as text and as a button fill. */
+    --c-forest: #8fcdb0;
+    --c-forest-hover: #aadbc4;
+    --c-on-forest: #0d261f;
+    --c-forest-deep: #0b1d17;
+    --c-forest-soft: #1b2b25;
+    --c-lim: #d9a274;
+    --c-lim-light: #c99366;
+    --c-paper: #0f1614;
+    --c-surface: #16201c;
+    --c-line: #27332e;
+    --c-line-strong: #3d4b45;
+    --c-ink: #e7ece9;
+    --c-ink-muted: #a6b3ad;
+    --c-link: #8fcdb0;
+    --c-danger: #ff8a7a;
+    --c-grid: #24302b;
+
+    --tone-ceil: #e39bf0;
+    --tone-up: #4cd38a;
+    --tone-ref: #f2c14e;
+    --tone-down: #ff7a75;
+    --tone-floor: #5cc8f5;
+  }
+}
+
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
+/* Theme toggle icon: moon while light, sun while dark. */
+.theme-when-dark {
+  display: none;
+}
+:root[data-theme="dark"] .theme-when-dark {
+  display: block;
+}
+:root[data-theme="dark"] .theme-when-light {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-when-dark {
+    display: block;
+  }
+  :root:not([data-theme="light"]) .theme-when-light {
+    display: none;
+  }
 }
 
 html {

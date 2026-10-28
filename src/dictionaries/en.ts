@@ -27,6 +27,7 @@ const en: Dictionary = {
     logout: "Sign out",
     menu: "Open menu",
     closeMenu: "Close menu",
+    theme: "Switch light / dark theme",
     language: "Language",
     skip: "Skip to main content",
   },

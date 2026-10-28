@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Be_Vietnam_Pro, Newsreader, Noto_Sans_TC, Noto_Serif_TC } from "next/font/google";
 import "../globals.css";
 import { locales } from "@/lib/i18n-config";
 import { getDictionary, resolveLocale } from "@/lib/i18n";
 import { currentUser } from "@/lib/auth";
+import { THEME_COOKIE, parseTheme } from "@/lib/theme-config";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -21,6 +23,13 @@ const serif = Newsreader({
 // CJK faces are split by unicode-range, so they only download when Chinese text is on screen.
 const cjkSans = Noto_Sans_TC({ weight: ["400", "500", "700"], variable: "--font-cjk-sans", preload: false, display: "swap" });
 const cjkSerif = Noto_Serif_TC({ weight: ["500", "600"], variable: "--font-cjk-serif", preload: false, display: "swap" });
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6f7f4" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1614" },
+  ],
+};
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -42,10 +51,12 @@ export async function generateMetadata({ params }: LayoutProps<"/[lang]">): Prom
 
 export default async function RootLayout({ children, params }: LayoutProps<"/[lang]">) {
   const lang = await resolveLocale(params);
-  const [t, user] = await Promise.all([getDictionary(lang), currentUser()]);
+  const [t, user, cookieStore] = await Promise.all([getDictionary(lang), currentUser(), cookies()]);
+  // No cookie → no data-theme, so CSS follows the OS setting.
+  const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value);
 
   return (
-    <html lang={lang} className={`${body.variable} ${serif.variable} ${cjkSans.variable} ${cjkSerif.variable}`}>
+    <html lang={lang} data-theme={theme} className={`${body.variable} ${serif.variable} ${cjkSans.variable} ${cjkSerif.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

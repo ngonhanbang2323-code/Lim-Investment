@@ -28,7 +28,7 @@ export default async function InsightsPage({ params, searchParams }: PageProps<"
               key={key}
               href={key ? `/${lang}/insights?cat=${key}` : `/${lang}/insights`}
               aria-current={(category ?? "") === key ? "page" : undefined}
-              className="inline-flex min-h-10 items-center rounded-full border border-line-strong bg-surface px-4 text-sm hover:border-forest aria-[current=page]:border-forest aria-[current=page]:bg-forest aria-[current=page]:text-white"
+              className="inline-flex min-h-10 items-center rounded-full border border-line-strong bg-surface px-4 text-sm hover:border-forest aria-[current=page]:border-forest aria-[current=page]:bg-forest aria-[current=page]:text-on-forest"
             >
               {label}
             </Link>

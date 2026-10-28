@@ -26,6 +26,7 @@ const zhTW: Dictionary = {
     logout: "登出",
     menu: "開啟選單",
     closeMenu: "關閉選單",
+    theme: "切換淺色／深色模式",
     language: "語言",
     skip: "跳至主要內容",
   },

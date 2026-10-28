@@ -26,6 +26,7 @@ const vi = {
     logout: "Đăng xuất",
     menu: "Mở menu",
     closeMenu: "Đóng menu",
+    theme: "Chuyển giao diện sáng / tối",
     language: "Ngôn ngữ",
     skip: "Bỏ qua đến nội dung chính",
   },

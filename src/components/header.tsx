@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { localeNames, locales, type Locale } from "@/lib/i18n-config";
 import type { Dictionary } from "@/dictionaries/vi";
 import { Logo } from "./logo";
+import { ThemeToggle } from "./theme-toggle";
 import { ChevronDown, CloseIcon, Globe, MenuIcon, UserIcon } from "./icons";
 
 type NavT = Dictionary["nav"];
@@ -144,6 +145,7 @@ export function Header({ lang, t, cta, user }: Props) {
         </nav>
 
         <div className="ml-auto hidden items-center gap-2 xl:flex">
+          <ThemeToggle label={t.theme} />
           <div className="relative">
             <button
               type="button"
@@ -181,15 +183,16 @@ export function Header({ lang, t, cta, user }: Props) {
           </Link>
           <Link
             href={`/${lang}/contact`}
-            className="ml-1 inline-flex min-h-11 items-center whitespace-nowrap rounded-md bg-forest px-4 text-sm font-semibold text-white transition-colors hover:bg-forest-deep"
+            className="ml-1 inline-flex min-h-11 items-center whitespace-nowrap rounded-md bg-forest px-4 text-sm font-semibold text-on-forest transition-colors hover:bg-forest-hover"
           >
             {cta}
           </Link>
         </div>
 
+        <ThemeToggle label={t.theme} className="ml-auto xl:hidden" />
         <button
           type="button"
-          className="ml-auto flex size-11 cursor-pointer items-center justify-center rounded-md text-ink hover:bg-forest-soft xl:hidden"
+          className="flex size-11 cursor-pointer items-center justify-center rounded-md text-ink hover:bg-forest-soft xl:hidden"
           aria-label={mobile ? t.closeMenu : t.menu}
           aria-expanded={mobile}
           aria-controls="mobile-nav"
@@ -236,7 +239,7 @@ export function Header({ lang, t, cta, user }: Props) {
             </ul>
           </nav>
           <div className="mt-6 grid gap-3">
-            <Link href={`/${lang}/contact`} className="flex min-h-12 items-center justify-center rounded-md bg-forest font-semibold text-white">
+            <Link href={`/${lang}/contact`} className="flex min-h-12 items-center justify-center rounded-md bg-forest font-semibold text-on-forest">
               {cta}
             </Link>
             <Link href={user ? accountHref : `/${lang}/login`} className="flex min-h-12 items-center justify-center gap-2 rounded-md border border-line-strong font-medium">

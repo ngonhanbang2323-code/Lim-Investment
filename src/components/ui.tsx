@@ -20,9 +20,9 @@ export function PageHeader({ title, lead, children }: { title: string; lead?: st
 const buttonBase =
   "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md px-5 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60";
 export const buttonStyles = {
-  primary: `${buttonBase} bg-forest text-white hover:bg-forest-deep`,
+  primary: `${buttonBase} bg-forest text-on-forest hover:bg-forest-hover`,
   secondary: `${buttonBase} border border-line-strong bg-surface text-ink hover:border-forest hover:text-forest`,
-  onDark: `${buttonBase} bg-white text-forest-deep hover:bg-forest-soft`,
+  onDark: `${buttonBase} bg-white text-forest-deep hover:bg-white/85`,
   ghostOnDark: `${buttonBase} border border-white/35 text-white hover:border-white hover:bg-white/10`,
   danger: `${buttonBase} border border-line-strong bg-surface text-danger hover:border-danger`,
 };

@@ -111,7 +111,7 @@ export function Screener({ kind, rows, lang, t, signedIn }: Props) {
                 type="button"
                 aria-pressed={on}
                 onClick={() => set("ex", on ? c.ex.filter((e) => e !== ex) : [...c.ex, ex])}
-                className="min-h-9 cursor-pointer rounded-full border border-line-strong px-3 text-sm aria-pressed:border-forest aria-pressed:bg-forest aria-pressed:text-white"
+                className="min-h-9 cursor-pointer rounded-full border border-line-strong px-3 text-sm aria-pressed:border-forest aria-pressed:bg-forest aria-pressed:text-on-forest"
               >
                 {ex === "UPCOM" ? "UPCoM" : ex}
               </button>
@@ -214,7 +214,7 @@ export function Screener({ kind, rows, lang, t, signedIn }: Props) {
           className={`${buttonStyles.secondary} w-full lg:hidden`}
         >
           <Filter size={18} /> {tt.showFilters}
-          {active > 0 && <span className="rounded-full bg-forest px-2 text-xs text-white">{active}</span>}
+          {active > 0 && <span className="rounded-full bg-forest px-2 text-xs text-on-forest">{active}</span>}
         </button>
         <div id="screen-filters" className={`${panelOpen ? "block" : "hidden"} mt-4 space-y-4 lg:mt-0 lg:block`}>
           {commonFilters}
