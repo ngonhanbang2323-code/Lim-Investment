@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = process.env.SITE_URL ?? "http://localhost:3000";
-  const pages = ["", "/about", "/services", "/team", "/contact", "/market", "/insights", "/tools/screener", "/tools/fundamental", "/tools/technical"];
+  const pages = ["", "/about", "/services", "/team", "/contact", "/market", "/insights", "/tools/screener", "/tools/fundamental", "/tools/technical", "/tools/sector-strength"];
   const posts = await db.post.findMany({ where: { published: true, publishedAt: { lte: new Date() } }, select: { slug: true, updatedAt: true } });
   const paths = [
     ...pages.map((p) => ({ path: p, lastModified: undefined as Date | undefined })),

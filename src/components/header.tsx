@@ -35,6 +35,7 @@ function useNav(lang: Locale, t: NavT): NavEntry[] {
         { href: p("/tools/screener"), label: t.screener, hint: t.screenerHint },
         { href: p("/tools/fundamental"), label: t.fundamental, hint: t.fundamentalHint },
         { href: p("/tools/technical"), label: t.technical, hint: t.technicalHint },
+        { href: p("/tools/sector-strength"), label: t.strength, hint: t.strengthHint },
       ],
     },
     { href: p("/insights"), label: t.insights },

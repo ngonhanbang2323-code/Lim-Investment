@@ -22,6 +22,7 @@ export function Footer({ lang, t }: { lang: Locale; t: Dictionary }) {
         [p("/tools/screener"), t.nav.screener],
         [p("/tools/fundamental"), t.nav.fundamental],
         [p("/tools/technical"), t.nav.technical],
+        [p("/tools/sector-strength"), t.nav.strength],
         [p("/insights"), t.nav.insights],
       ],
     },

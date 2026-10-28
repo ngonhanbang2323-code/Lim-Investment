@@ -5,6 +5,7 @@ import "server-only";
 import { getSnapshot } from "./mock";
 import { computeTechnicals } from "./indicators";
 import { universe } from "./universe";
+import { computeSectorStrength } from "./sector-strength";
 import type { ScreenerRow, StockMeta } from "./types";
 
 export const isSampleData = (process.env.MARKET_PROVIDER ?? "mock") === "mock";
@@ -52,4 +53,15 @@ export function getScreenerRows(): ScreenerRow[] {
     ...snap.fundamentals.get(meta.symbol)!,
     ...computeTechnicals(snap.bars.get(meta.symbol)!),
   }));
+}
+
+let strengthCache: { date: string; value: ReturnType<typeof computeSectorStrength> } | null = null;
+
+/** Daily sector strength scores for every horizon (recomputed once per session). */
+export function getSectorStrength() {
+  const snap = getSnapshot();
+  if (strengthCache?.date !== snap.date) {
+    strengthCache = { date: snap.date, value: computeSectorStrength(listStocks(), snap.bars) };
+  }
+  return strengthCache.value;
 }
