@@ -6,6 +6,7 @@ export type ScreenKind = "screener" | "fundamental" | "technical";
 export type Criteria = {
   ex: string[]; // exchanges
   sec: string; // sector, "" = all
+  ind: string; // detailed industry, "" = all
   vn30: boolean;
   capMin?: number; // VND bn
   capMax?: number;
@@ -43,7 +44,7 @@ export const defaultSort: Record<ScreenKind, string> = { screener: "marketCap", 
 
 export function emptyCriteria(kind: ScreenKind): Criteria {
   return {
-    ex: [], sec: "", vn30: false, pePos: false, ma20: false, ma50: false, ma200: false, gc: false, dc: false,
+    ex: [], sec: "", ind: "", vn30: false, pePos: false, ma20: false, ma50: false, ma200: false, gc: false, dc: false,
     rsi: "", macd: "", brk: false, near: false, sort: defaultSort[kind], dir: "desc",
   };
 }
@@ -70,6 +71,7 @@ export function parseCriteria(kind: ScreenKind, params: URLSearchParams): Criter
   const ex = params.get("ex");
   if (ex) c.ex = ex.split(",").filter((e) => ["HOSE", "HNX", "UPCOM"].includes(e));
   if (params.get("sec")) c.sec = params.get("sec")!;
+  if (params.get("ind")) c.ind = params.get("ind")!;
   for (const k of NUM_KEYS) {
     const v = params.get(k);
     if (v != null && v !== "" && Number.isFinite(Number(v))) c[k] = Number(v);
@@ -88,6 +90,7 @@ export function serializeCriteria(kind: ScreenKind, c: Criteria) {
   const p = new URLSearchParams();
   if (c.ex.length) p.set("ex", c.ex.join(","));
   if (c.sec) p.set("sec", c.sec);
+  if (c.ind) p.set("ind", c.ind);
   for (const k of NUM_KEYS) if (c[k] != null) p.set(k, String(c[k]));
   for (const k of BOOL_KEYS) if (c[k]) p.set(k, "1");
   if (c.rsi) p.set("rsi", c.rsi);
@@ -106,6 +109,7 @@ export function applyCriteria(rows: ScreenerRow[], c: Criteria) {
   const out = rows.filter((r) => {
     if (c.ex.length && !c.ex.includes(r.exchange)) return false;
     if (c.sec && r.sector !== c.sec) return false;
+    if (c.ind && r.industry !== c.ind) return false;
     if (c.vn30 && !r.vn30) return false;
     if (!ge(r.marketCap / 1e9, c.capMin) || !le(r.marketCap / 1e9, c.capMax)) return false;
     if (!ge(r.price / 1000, c.pMin) || !le(r.price / 1000, c.pMax)) return false;

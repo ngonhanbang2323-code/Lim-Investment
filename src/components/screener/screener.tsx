@@ -25,6 +25,7 @@ export type ScreenerText = {
   tools: Dictionary["tools"];
   metrics: Dictionary["metrics"];
   sectors: Dictionary["market"]["sectors"];
+  industries: Dictionary["market"]["industries"];
   columns: Dictionary["market"]["columns"];
   common: Dictionary["common"];
 };
@@ -95,6 +96,9 @@ export function Screener({ kind, rows, lang, t, signedIn }: Props) {
   const sortBy = (key: string) =>
     setC((prev) => ({ ...prev, sort: key, dir: prev.sort === key ? (prev.dir === "asc" ? "desc" : "asc") : key === "symbol" ? "asc" : "desc" }));
 
+  // Detailed industries, narrowed to the chosen sector.
+  const industryOptions = Object.entries(t.industries).filter(([k]) => !c.sec || rows.some((r) => r.industry === k && r.sector === c.sec));
+
   const active = activeCount(kind, c);
   const presetNames = tt.presetList as Record<string, string>;
 
@@ -121,9 +125,20 @@ export function Screener({ kind, rows, lang, t, signedIn }: Props) {
       </fieldset>
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">{tt.sector}</span>
-        <select value={c.sec} onChange={(e) => set("sec", e.target.value)} className={inputStyles}>
+        <select value={c.sec} onChange={(e) => setC((p) => ({ ...p, sec: e.target.value, ind: "" }))} className={inputStyles}>
           <option value="">{tt.all}</option>
           {Object.entries(t.sectors).map(([k, label]) => (
+            <option key={k} value={k}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium">{tt.industry}</span>
+        <select value={c.ind} onChange={(e) => set("ind", e.target.value)} className={inputStyles}>
+          <option value="">{tt.all}</option>
+          {industryOptions.map(([k, label]) => (
             <option key={k} value={k}>
               {label}
             </option>
@@ -269,7 +284,7 @@ export function Screener({ kind, rows, lang, t, signedIn }: Props) {
                     <Link href={`/${lang}/market/${r.symbol}`} className="font-semibold text-forest hover:underline">
                       {r.symbol}
                     </Link>
-                    <span className="block max-w-[11rem] truncate text-xs text-ink-muted">{t.sectors[r.sector]}</span>
+                    <span className="block max-w-[11rem] truncate text-xs text-ink-muted">{t.industries[r.industry]}</span>
                   </th>
                   {columns.map((col) => (
                     <td key={col.key} className="px-3 py-2 text-right">

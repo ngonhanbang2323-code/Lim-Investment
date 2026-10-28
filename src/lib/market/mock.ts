@@ -87,15 +87,31 @@ function marketReturn(date: string) {
   return 0.0004 + 0.009 * normal(`MKT|${date}`);
 }
 
-function buildSeries(symbol: string, dates: string[]) {
+/**
+ * Slow-moving drift shared by an industry's stocks: a decaying sum of daily shocks, so money
+ * rotates into and out of industries over weeks, as on the real market.
+ */
+function industryDrift(industry: string, dates: string[]) {
+  const drift: number[] = [];
+  // Warm up before the first date so the series starts in its steady state.
+  let f = 0;
+  for (let k = 60; k > 0; k--) f = 0.93 * f + 0.0006 * normal(`IND|${industry}|warm${k}`);
+  for (const date of dates) {
+    f = 0.93 * f + 0.0006 * normal(`IND|${industry}|${date}`);
+    drift.push(f);
+  }
+  return drift;
+}
+
+function buildSeries(symbol: string, dates: string[], drift: number[]) {
   const meta = universe.find((s) => s.symbol === symbol)!;
   const band = BAND[meta.exchange] - 0.003;
   const vol = between(`${symbol}|vol`, 0.011, 0.02);
   const beta = SECTOR_BETA[meta.sector];
   const baseVolume = between(`${symbol}|bv`, 0.6e6, 9e6);
 
-  const returns = dates.map((date) => {
-    const r = beta * marketReturn(date) + vol * normal(`${symbol}|${date}`);
+  const returns = dates.map((date, i) => {
+    const r = beta * marketReturn(date) + drift[i] + vol * normal(`${symbol}|${date}`);
     return Math.max(-band, Math.min(band, r));
   });
 
@@ -210,12 +226,14 @@ export function getSnapshot(): Snapshot {
   if (snapshot?.date === date) return snapshot;
 
   const dates = sessionDates(end, HISTORY_SESSIONS);
+  const drifts = new Map<string, number[]>();
   const bars = new Map<string, Bar[]>();
   const quotes = new Map<string, Quote>();
   const fundamentals = new Map<string, Fundamentals>();
 
   for (const s of universe) {
-    const series = buildSeries(s.symbol, dates);
+    if (!drifts.has(s.industry)) drifts.set(s.industry, industryDrift(s.industry, dates));
+    const series = buildSeries(s.symbol, dates, drifts.get(s.industry)!);
     bars.set(s.symbol, series);
     const [y, t] = [series[series.length - 2], series[series.length - 1]];
     const { ceiling, floor } = priceLimits(y.close, s.exchange);

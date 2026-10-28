@@ -26,7 +26,7 @@ export default async function SectorStrengthPage({ params }: PageProps<"/[lang]/
       <Container className="py-10">
         <SectorStrengthMap
           dates={dates}
-          rows={rows.map((r) => ({ ...r, label: t.market.sectors[r.sector] }))}
+          rows={rows.map((r) => ({ ...r, label: t.market.industries[r.industry] }))}
           lang={lang}
           t={t.tools.strength}
         />

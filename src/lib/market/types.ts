@@ -14,10 +14,49 @@ export type Sector =
   | "industrials"
   | "transport";
 
+/** Detailed industry, finer than Sector; see industrySector in universe.ts. */
+export type Industry =
+  | "banks"
+  | "securities"
+  | "insurance"
+  | "vingroup"
+  | "realEstate"
+  | "industrialParks"
+  | "construction"
+  | "buildingMaterials"
+  | "steel"
+  | "chemicals"
+  | "fertilizers"
+  | "rubber"
+  | "plastics"
+  | "mining"
+  | "oilGas"
+  | "fuelDistribution"
+  | "power"
+  | "water"
+  | "electrical"
+  | "tech"
+  | "retail"
+  | "autos"
+  | "dairy"
+  | "beverages"
+  | "sugar"
+  | "food"
+  | "livestock"
+  | "seafood"
+  | "textiles"
+  | "pharma"
+  | "household"
+  | "aviation"
+  | "shipping"
+  | "ports"
+  | "roadTransport";
+
 export type StockMeta = {
   symbol: string;
   exchange: Exchange;
   sector: Sector;
+  industry: Industry;
   nameVi: string;
   nameEn: string;
   vn30?: boolean;

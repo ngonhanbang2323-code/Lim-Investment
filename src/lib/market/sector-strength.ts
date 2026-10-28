@@ -1,14 +1,14 @@
-// Sector strength map. For each session, every stock is ranked against the whole universe by
-// its price change over the horizon; sectors are then ranked 0–100 by the mean rank of their
-// members. 100 = the strongest sector that session, 0 = the weakest.
-import type { Bar, Sector, StockMeta } from "./types";
+// Sector strength map, by detailed industry. For each session, every stock is ranked against the
+// whole universe by its price change over the horizon; industries are then ranked 0–100 by the
+// mean rank of their members. 100 = the strongest industry that session, 0 = the weakest.
+import type { Bar, Industry, StockMeta } from "./types";
 
 export const horizons = { short: 5, medium: 20, long: 60 } as const;
 export type Horizon = keyof typeof horizons;
 
 export type SectorStrength = {
   dates: string[]; // sessions with a score, oldest first
-  rows: { sector: Sector; count: number; scores: Record<Horizon, number[]> }[];
+  rows: { industry: Industry; count: number; scores: Record<Horizon, number[]> }[];
 };
 
 function percentileRanks(values: number[]) {
@@ -31,22 +31,22 @@ export function computeSectorStrength(stocks: StockMeta[], bars: Map<string, Bar
   const longest = Math.max(...Object.values(horizons));
   const dates = sessions.slice(longest);
 
-  const sectors = [...new Set(stocks.map((s) => s.sector))];
-  const members = new Map(sectors.map((sec) => [sec, stocks.flatMap((s, i) => (s.sector === sec ? [i] : []))]));
-  const rows = sectors.map((sector) => ({
-    sector,
-    count: members.get(sector)!.length,
+  const industries = [...new Set(stocks.map((s) => s.industry))];
+  const members = new Map(industries.map((ind) => [ind, stocks.flatMap((s, i) => (s.industry === ind ? [i] : []))]));
+  const rows = industries.map((industry) => ({
+    industry,
+    count: members.get(industry)!.length,
     scores: { short: [] as number[], medium: [] as number[], long: [] as number[] },
   }));
 
   for (let d = longest; d < sessions.length; d++) {
     for (const [h, lookback] of Object.entries(horizons) as [Horizon, number][]) {
       const stockRanks = percentileRanks(series.map((b) => b[d].close / b[d - lookback].close - 1));
-      const sectorMeans = rows.map((row) => {
-        const idx = members.get(row.sector)!;
+      const industryMeans = rows.map((row) => {
+        const idx = members.get(row.industry)!;
         return idx.reduce((sum, i) => sum + stockRanks[i], 0) / idx.length;
       });
-      percentileRanks(sectorMeans).forEach((score, i) => rows[i].scores[h].push(Math.round(score)));
+      percentileRanks(industryMeans).forEach((score, i) => rows[i].scores[h].push(Math.round(score)));
     }
   }
   return { dates, rows };

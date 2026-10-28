@@ -24,7 +24,7 @@ export async function ScreenerPage({ lang, kind }: { lang: Locale; kind: ScreenK
           rows={getScreenerRows()}
           lang={lang}
           signedIn={!!user}
-          t={{ tools: t.tools, metrics: t.metrics, sectors: t.market.sectors, columns: t.market.columns, common: t.common }}
+          t={{ tools: t.tools, metrics: t.metrics, sectors: t.market.sectors, industries: t.market.industries, columns: t.market.columns, common: t.common }}
         />
       </Container>
     </>

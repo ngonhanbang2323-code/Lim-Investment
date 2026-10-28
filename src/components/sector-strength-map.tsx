@@ -5,12 +5,12 @@ import { useMemo, useState } from "react";
 import type { Locale } from "@/lib/i18n-config";
 import type { Dictionary } from "@/dictionaries/vi";
 import type { Horizon } from "@/lib/market/sector-strength";
-import type { Sector } from "@/lib/market/types";
+import type { Industry } from "@/lib/market/types";
 import { interpolate } from "@/lib/format";
 import { buttonStyles, inputStyles } from "./ui";
 import { External } from "./icons";
 
-type Row = { sector: Sector; label: string; count: number; scores: Record<Horizon, number[]> };
+type Row = { industry: Industry; label: string; count: number; scores: Record<Horizon, number[]> };
 type Props = { dates: string[]; rows: Row[]; lang: Locale; t: Dictionary["tools"]["strength"] };
 
 // Score bands, weakest to strongest. Fills are the same in both themes; text stays dark on all of them.
@@ -128,18 +128,18 @@ export function SectorStrengthMap({ dates, rows, lang, t }: Props) {
             </thead>
             <tbody>
               {visible.rows.map((r, n) => (
-                <tr key={r.sector}>
+                <tr key={r.industry}>
                   <td className={`${stickyNo} border-b border-line bg-surface px-2 text-center text-ink-muted`}>{n + 1}</td>
                   <th scope="row" className={`${stickySector} border-b border-line bg-surface px-3 py-2 text-left font-medium`}>
                     <span className="flex w-36 items-center gap-1.5 sm:w-52 sm:gap-2">
                       {/* On phones the name itself is the link; the icon only shows from sm up. */}
-                      <Link href={`/${lang}/tools/screener?sec=${r.sector}`} title={r.label}
+                      <Link href={`/${lang}/tools/screener?ind=${r.industry}`} title={r.label}
                         aria-label={interpolate(t.openSector, { sector: r.label })} className="min-w-0 flex-1 truncate hover:text-forest hover:underline">
                         {r.label}
                       </Link>
                       <Trend value={r.trend} t={t.trend} />
                       <Link
-                        href={`/${lang}/tools/screener?sec=${r.sector}`}
+                        href={`/${lang}/tools/screener?ind=${r.industry}`}
                         // Same target as the name link; kept as a visual cue only.
                         aria-hidden="true"
                         title={interpolate(t.openSector, { sector: r.label })}

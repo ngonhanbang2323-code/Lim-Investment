@@ -82,7 +82,7 @@ export default async function StockPage({ params }: PageProps<"/[lang]/market/[s
           </h1>
           <p className="mt-2 text-sm text-ink-muted">
             {t.market.stock.exchange}: {meta.exchange === "UPCOM" ? "UPCoM" : meta.exchange} · {t.market.stock.sector}:{" "}
-            {t.market.sectors[meta.sector]}
+            {t.market.sectors[meta.sector]} · {t.market.stock.industry}: {t.market.industries[meta.industry]}
           </p>
           <div className="tabular mt-5 flex flex-wrap items-baseline gap-x-4">
             <span className={`text-4xl font-semibold ${tone}`}>{fmtPrice(q.price, lang)}</span>
