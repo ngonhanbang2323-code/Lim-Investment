@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getDictionary, resolveLocale } from "@/lib/i18n";
-import { getSectorStrength, getSessionDate, isSampleData } from "@/lib/market";
+import { getSectorStrength, getSessionDate, dataSource } from "@/lib/market";
 import { fmtDate } from "@/lib/format";
 import { Container, PageHeader, SampleBadge } from "@/components/ui";
 import { SectorStrengthMap } from "@/components/sector-strength-map";
@@ -20,7 +20,7 @@ export default async function SectorStrengthPage({ params }: PageProps<"/[lang]/
       <PageHeader title={t.tools.strength.title} lead={t.tools.strength.lead}>
         <p className="mt-4 flex flex-wrap items-center gap-3 text-sm text-ink-muted">
           {t.common.session} {fmtDate(getSessionDate(), lang, { dateStyle: "full" })}
-          {isSampleData && <SampleBadge label={t.common.sampleData} note={t.common.sampleDataNote} />}
+          <SampleBadge label={dataSource.kind === "sample" ? t.common.sampleData : t.common.illustrativeData} note={t.common.sampleDataNote} />
         </p>
       </PageHeader>
       <Container className="py-10">
@@ -30,7 +30,7 @@ export default async function SectorStrengthPage({ params }: PageProps<"/[lang]/
           lang={lang}
           t={t.tools.strength}
         />
-        {isSampleData && <p className="mt-2 text-xs text-ink-muted">{t.common.sampleDataNote}</p>}
+        <p className="mt-2 max-w-3xl text-xs text-ink-muted">{dataSource.kind === "sample" ? t.common.sampleDataNote : t.common.realDataNote}</p>
       </Container>
     </>
   );

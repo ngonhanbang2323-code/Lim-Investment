@@ -56,9 +56,19 @@ Mở http://localhost:3000. Tài khoản admin là `ADMIN_EMAIL` / `ADMIN_PASSWO
 
 ## Dữ liệu thị trường
 
-Hiện website dùng **dữ liệu mẫu** (`MARKET_PROVIDER="mock"`), sinh cố định theo từng mã và từng ngày. Mọi trang có số liệu đều ghi rõ "Dữ liệu mẫu".
+Số liệu thật lấy từ **Yuanta Việt Nam** (qua YSVN MCP) và lưu trong `data/market-snapshot.json`:
 
-Để dùng dữ liệu thật, viết một nhà cung cấp mới (ví dụ SSI FastConnect Data) trả về cùng các hàm như `src/lib/market/mock.ts`, rồi chọn nó trong `src/lib/market/index.ts` theo `MARKET_PROVIDER`. Các trang và công cụ không cần sửa.
+- Bảng giá của một phiên cho 131 mã: tham chiếu, trần, sàn, giá khớp, cao, thấp, khối lượng, giá trị
+- Chỉ báo kỹ thuật: MA20, MA50, MA200, RSI(14), MACD và đường tín hiệu, khối lượng trung bình 20 phiên
+- VN-Index, VN30, HNX-Index, UPCoM-Index kèm số mã tăng / giảm / đứng giá
+
+Vẫn là **dữ liệu minh họa** (website ghi rõ): lịch sử giá trên biểu đồ, biến động 1 tuần – 3 tháng, đỉnh/đáy 52 tuần, chỉ số cơ bản (P/E, ROE…) và bản đồ sức mạnh ngành. Lịch sử minh họa được co giãn để khớp với giá tham chiếu thật, nên biểu đồ nối liền với phiên thật.
+
+**Cập nhật snapshot:** website không tự gọi được YSVN. Nhờ Claude "cập nhật snapshot từ YSVN" trong Claude Code, sau đó commit, push và redeploy trên Hostinger. Snapshot chụp trong giờ giao dịch là giá trong phiên; chụp sau 15:00 là giá đóng cửa.
+
+**Tự cập nhật hằng ngày** cần một API có khóa riêng (Yuanta, WiData hoặc SSI FastConnect). Khi có, viết nhà cung cấp mới thay cho `src/lib/market/snapshot.ts` + `mock.ts`; các trang không cần sửa.
+
+Hiển thị công khai dữ liệu của bên thứ ba cần được nhà cung cấp cho phép: xác nhận điều khoản với Yuanta Việt Nam trước khi ra mắt.
 
 ## Nội dung cần thay trước khi ra mắt
 

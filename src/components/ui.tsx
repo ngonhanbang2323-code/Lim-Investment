@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import type { Locale } from "@/lib/i18n-config";
+import { fmtDate } from "@/lib/format";
 
 export function Container({ className = "", children }: { className?: string; children: ReactNode }) {
   return <div className={`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${className}`}>{children}</div>;
@@ -81,4 +83,25 @@ export function Field({
       )}
     </div>
   );
+}
+
+type DataSource = { kind: "sample" } | { kind: "snapshot"; source: string; asOf: string; intraday: boolean };
+type DataText = { sampleData: string; sampleDataNote: string; dataSource: string; intraday: string; realDataNote: string };
+
+/** Where market figures come from: the real snapshot (with its time) or sample data. */
+export function DataBadge({ source, text, lang }: { source: DataSource; text: DataText; lang: Locale }) {
+  if (source.kind === "sample") return <SampleBadge label={text.sampleData} note={text.sampleDataNote} />;
+  const time = fmtDate(source.asOf, lang, { dateStyle: "short", timeStyle: "short" });
+  const label = text.dataSource.replace("{source}", source.source).replace("{time}", time);
+  return (
+    <span title={text.realDataNote} className="inline-flex items-center gap-1.5 rounded-full border border-current/30 px-2.5 py-0.5 text-xs font-medium opacity-90">
+      <span className="size-1.5 rounded-full bg-tone-up" aria-hidden="true" />
+      {label}
+      {source.intraday && <span className="opacity-75">({text.intraday})</span>}
+    </span>
+  );
+}
+
+export function dataNote(source: DataSource, text: DataText) {
+  return source.kind === "sample" ? text.sampleDataNote : text.realDataNote;
 }

@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { getDictionary, resolveLocale } from "@/lib/i18n";
-import { getIndices, getScreenerRows, getSessionDate, isSampleData } from "@/lib/market";
+import { getIndices, getScreenerRows, getSessionDate, dataSource } from "@/lib/market";
 import { listPosts } from "@/lib/posts";
 import { fmtDate, fmtNumber, fmtPct, fmtSigned, signTone, toneClass } from "@/lib/format";
 import { GrowthRings } from "@/components/growth-rings";
 import { Sparkline } from "@/components/sparkline";
-import { ButtonLink, Container, SampleBadge } from "@/components/ui";
+import { ButtonLink, Container, DataBadge, dataNote } from "@/components/ui";
 import { ChevronRight } from "@/components/icons";
 import { PostCard } from "@/components/post-card";
 
@@ -69,7 +69,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             >
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-sm font-medium text-white/75">{t.market.indices.VNINDEX}</span>
-                {isSampleData && <SampleBadge label={t.common.sampleData} note={t.common.sampleDataNote} />}
+                <DataBadge source={dataSource} text={t.common} lang={lang} />
               </div>
               <div className="mt-1 flex items-baseline gap-3">
                 <span className="tabular text-3xl font-semibold">{fmtNumber(vnindex.value, lang, 2)}</span>
@@ -117,7 +117,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               );
             })}
           </ul>
-          {isSampleData && <p className="mt-3 text-xs text-ink-muted">{t.common.sampleDataNote}</p>}
+          <p className="mt-3 max-w-3xl text-xs text-ink-muted">{dataNote(dataSource, t.common)}</p>
         </Container>
       </section>
 

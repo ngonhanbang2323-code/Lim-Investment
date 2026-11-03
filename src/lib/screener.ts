@@ -125,12 +125,13 @@ export function applyCriteria(rows: ScreenerRow[], c: Criteria) {
     if (c.ma20 && r.price <= r.ma20) return false;
     if (c.ma50 && r.price <= r.ma50) return false;
     if (c.ma200 && r.price <= r.ma200) return false;
-    if (c.gc && r.maCross !== "golden") return false;
-    if (c.dc && r.maCross !== "death") return false;
+    if (c.gc && !(r.ma50 > r.ma200)) return false;
+    if (c.dc && !(r.ma50 < r.ma200)) return false;
     if (c.rsi === "os" && r.rsi14 >= 30) return false;
     if (c.rsi === "ob" && r.rsi14 <= 70) return false;
     if (c.rsi === "n" && (r.rsi14 < 30 || r.rsi14 > 70)) return false;
-    if (c.macd && r.macdCross !== c.macd) return false;
+    if (c.macd === "up" && !(r.macd > r.macdSignal)) return false;
+    if (c.macd === "down" && !(r.macd < r.macdSignal)) return false;
     if (!ge(r.volumeRatio, c.vol)) return false;
     if (c.brk && !r.breakout52w) return false;
     if (c.near && r.price < r.high52w * 0.95) return false;

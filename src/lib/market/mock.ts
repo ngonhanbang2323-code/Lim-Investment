@@ -2,6 +2,7 @@
 // so history stays stable while a new session is appended every trading day.
 import type { Bar, Exchange, Fundamentals, IndexSnapshot, Quote, Sector } from "./types";
 import { universe } from "./universe";
+import { applyIndex, applyQuote, hasSnapshot, snapshotInfo } from "./snapshot";
 
 const HISTORY_SESSIONS = 300;
 const ANCHOR_DATE = "2026-01-02"; // date on which each stock trades at its basePrice
@@ -221,7 +222,8 @@ function buildIndex(code: IndexSnapshot["code"], members: string[], bars: Map<st
 }
 
 export function getSnapshot(): Snapshot {
-  const end = lastSessionDate();
+  // With a real snapshot, the data stays on its session instead of rolling forward daily.
+  const end = hasSnapshot() ? new Date(snapshotInfo.session + "T00:00:00Z") : lastSessionDate();
   const date = isoDate(end);
   if (snapshot?.date === date) return snapshot;
 
@@ -235,6 +237,12 @@ export function getSnapshot(): Snapshot {
     if (!drifts.has(s.industry)) drifts.set(s.industry, industryDrift(s.industry, dates));
     const series = buildSeries(s.symbol, dates, drifts.get(s.industry)!);
     bars.set(s.symbol, series);
+    const real = applyQuote(s.symbol, series);
+    if (real) {
+      quotes.set(s.symbol, real);
+      fundamentals.set(s.symbol, buildFundamentals(s.symbol, s.sector, real.price));
+      continue;
+    }
     const [y, t] = [series[series.length - 2], series[series.length - 1]];
     const { ceiling, floor } = priceLimits(y.close, s.exchange);
     quotes.set(s.symbol, {
@@ -259,7 +267,7 @@ export function getSnapshot(): Snapshot {
     buildIndex("VN30", universe.filter((s) => s.vn30).map((s) => s.symbol), bars, dates),
     buildIndex("HNXINDEX", universe.filter((s) => s.exchange === "HNX").map((s) => s.symbol), bars, dates),
     buildIndex("UPCOMINDEX", universe.filter((s) => s.exchange === "UPCOM").map((s) => s.symbol), bars, dates),
-  ];
+  ].map(applyIndex);
 
   snapshot = { date, bars, quotes, fundamentals, indices };
   return snapshot;

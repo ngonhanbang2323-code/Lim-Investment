@@ -56,7 +56,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   const theme = parseTheme(cookieStore.get(THEME_COOKIE)?.value);
 
   return (
-    <html lang={lang} data-theme={theme} className={`${body.variable} ${serif.variable} ${cjkSans.variable} ${cjkSerif.variable}`}>
+    <html lang={lang} data-theme={theme} suppressHydrationWarning className={`${body.variable} ${serif.variable} ${cjkSans.variable} ${cjkSerif.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#main"

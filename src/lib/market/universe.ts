@@ -146,7 +146,6 @@ export const universe: Entry[] = [
   stock("BWE", "HOSE", "water", "Công ty CP Nước – Môi trường Bình Dương", "Biwase", 46700),
   stock("TDM", "HOSE", "water", "Công ty CP Nước Thủ Dầu Một", "Thu Dau Mot Water", 39500),
   // electrical
-  stock("CAV", "HOSE", "electrical", "Công ty CP Dây Cáp điện Việt Nam", "Cadivi", 62000),
   stock("GEX", "HOSE", "electrical", "Công ty CP Tập đoàn GELEX", "GELEX Group", 34800),
   // tech
   stock("CMG", "HOSE", "tech", "Công ty CP Tập đoàn Công nghệ CMC", "CMC Corporation", 42600),
@@ -179,7 +178,7 @@ export const universe: Entry[] = [
   stock("MSN", "HOSE", "food", "Công ty CP Tập đoàn Masan", "Masan Group", 74300, true),
   stock("PAN", "HOSE", "food", "Công ty CP Tập đoàn PAN", "PAN Group", 27400),
   // livestock
-  stock("DBC", "HNX", "livestock", "Công ty CP Tập đoàn Dabaco Việt Nam", "Dabaco Group", 28600),
+  stock("DBC", "HOSE", "livestock", "Công ty CP Tập đoàn Dabaco Việt Nam", "Dabaco Group", 28600),
   stock("HAG", "HOSE", "livestock", "Công ty CP Hoàng Anh Gia Lai", "Hoang Anh Gia Lai", 13900),
   // seafood
   stock("ANV", "HOSE", "seafood", "Công ty CP Nam Việt", "Nam Viet Corp", 18600),
@@ -210,7 +209,7 @@ export const universe: Entry[] = [
   stock("VOS", "HOSE", "shipping", "Công ty CP Vận tải biển Việt Nam", "Vosco", 13100),
   // ports
   stock("GMD", "HOSE", "ports", "Công ty CP Gemadept", "Gemadept", 61200),
-  stock("PHP", "HNX", "ports", "Công ty CP Cảng Hải Phòng", "Port of Hai Phong", 33000),
+  stock("PHP", "UPCOM", "ports", "Công ty CP Cảng Hải Phòng", "Port of Hai Phong", 33000),
   stock("SGP", "UPCOM", "ports", "Công ty CP Cảng Sài Gòn", "Saigon Port", 30500),
   stock("VSC", "HOSE", "ports", "Công ty CP Container Việt Nam", "Viconship", 19500),
   // roadTransport

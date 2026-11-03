@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { getDictionary, resolveLocale } from "@/lib/i18n";
-import { getIndices, getQuotes, getSessionDate, isSampleData, listStocks } from "@/lib/market";
+import { getIndices, getQuotes, getSessionDate, dataSource, listStocks } from "@/lib/market";
 import { fmtDate, fmtNumber, fmtPct, fmtSigned, signTone, toneClass } from "@/lib/format";
-import { Container, PageHeader, SampleBadge } from "@/components/ui";
+import { Container, PageHeader, DataBadge } from "@/components/ui";
 import { Sparkline } from "@/components/sparkline";
 import { PriceBoard, type BoardRow } from "@/components/price-board";
 
@@ -23,7 +23,7 @@ export default async function MarketPage({ params }: PageProps<"/[lang]/market">
       <PageHeader title={t.market.title} lead={t.market.lead}>
         <p className="mt-4 flex flex-wrap items-center gap-3 text-sm text-ink-muted">
           {t.common.session} {fmtDate(getSessionDate(), lang, { dateStyle: "full" })}
-          {isSampleData && <SampleBadge label={t.common.sampleData} note={t.common.sampleDataNote} />}
+          <DataBadge source={dataSource} text={t.common} lang={lang} />
         </p>
       </PageHeader>
 

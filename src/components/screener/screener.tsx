@@ -30,11 +30,11 @@ export type ScreenerText = {
   common: Dictionary["common"];
 };
 
-type Props = { kind: ScreenKind; rows: ScreenerRow[]; lang: Locale; t: ScreenerText; signedIn: boolean };
+type Props = { kind: ScreenKind; rows: ScreenerRow[]; lang: Locale; t: ScreenerText; signedIn: boolean; dataNote: string };
 
 type Column = { key: keyof ScreenerRow; label: string; render: (r: ScreenerRow) => React.ReactNode; align?: "left" };
 
-export function Screener({ kind, rows, lang, t, signedIn }: Props) {
+export function Screener({ kind, rows, lang, t, signedIn, dataNote }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const search = useSearchParams();
@@ -304,7 +304,7 @@ export function Screener({ kind, rows, lang, t, signedIn }: Props) {
           </table>
         </div>
         <p className="mt-3 text-xs text-ink-muted">
-          {tt.disclaimer} {t.common.sampleDataNote}
+          {tt.disclaimer} {dataNote}
         </p>
       </div>
     </div>

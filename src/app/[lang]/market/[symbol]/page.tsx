@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, resolveLocale } from "@/lib/i18n";
 import { intlLocale } from "@/lib/i18n-config";
-import { getStock, isSampleData, getSessionDate } from "@/lib/market";
+import { getStock, dataSource, getSessionDate } from "@/lib/market";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { fmtBillion, fmtDate, fmtNumber, fmtPct, fmtPrice, fmtSigned, priceTone, signTone, toneClass } from "@/lib/format";
-import { Container, SampleBadge } from "@/components/ui";
+import { Container, DataBadge, dataNote } from "@/components/ui";
 import { PriceChart } from "@/components/price-chart";
 import { WatchButton } from "@/components/watch-button";
 import { ChevronRight } from "@/components/icons";
@@ -92,7 +92,7 @@ export default async function StockPage({ params }: PageProps<"/[lang]/market/[s
           </div>
           <p className="mt-2 flex flex-wrap items-center gap-3 text-sm text-ink-muted">
             {t.common.session} {fmtDate(getSessionDate(), lang)}
-            {isSampleData && <SampleBadge label={t.common.sampleData} note={t.common.sampleDataNote} />}
+            <DataBadge source={dataSource} text={t.common} lang={lang} />
           </p>
         </div>
         <WatchButton
@@ -125,6 +125,7 @@ export default async function StockPage({ params }: PageProps<"/[lang]/market/[s
       <section className="mt-10">
         <h2 className="mb-4 font-display text-h2 text-forest">{t.market.stock.chart}</h2>
         <PriceChart locale={intlLocale[lang]} bars={stock.bars} rangeLabels={t.market.stock.range} label={`${meta.symbol} — ${t.market.stock.chart}`} />
+        <p className="mt-2 text-xs text-ink-muted">{dataSource.kind === "sample" ? t.common.sampleDataNote : t.common.illustrativeChart}</p>
       </section>
 
       <div className="mt-12 grid gap-10 lg:grid-cols-2">
@@ -145,7 +146,8 @@ export default async function StockPage({ params }: PageProps<"/[lang]/market/[s
           </section>
         ))}
       </div>
-      <p className="mt-8 text-xs text-ink-muted">{t.footer.disclaimer}</p>
+      <p className="mt-8 text-xs text-ink-muted">{dataNote(dataSource, t.common)}</p>
+      <p className="mt-2 text-xs text-ink-muted">{t.footer.disclaimer}</p>
     </Container>
   );
 }

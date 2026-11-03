@@ -6,9 +6,18 @@ import { getSnapshot } from "./mock";
 import { computeTechnicals } from "./indicators";
 import { universe } from "./universe";
 import { computeSectorStrength } from "./sector-strength";
+import { applyTechnicals, hasSnapshot, snapshotInfo } from "./snapshot";
 import type { ScreenerRow, StockMeta } from "./types";
 
-export const isSampleData = (process.env.MARKET_PROVIDER ?? "mock") === "mock";
+/** Where the numbers on screen come from; pages show this next to market data. */
+export const dataSource = hasSnapshot()
+  ? ({ kind: "snapshot", source: snapshotInfo.source, asOf: snapshotInfo.asOf, intraday: snapshotInfo.intraday } as const)
+  : ({ kind: "sample" } as const);
+export const isSampleData = dataSource.kind === "sample";
+
+function withRealTechnicals(symbol: string, q: { price: number; volume: number }, t: ReturnType<typeof computeTechnicals>) {
+  return applyTechnicals(symbol, q.price, q.volume, t);
+}
 
 export function listStocks(): StockMeta[] {
   return universe.map(({ basePrice: _, ...meta }) => meta);
@@ -23,7 +32,7 @@ export function getStock(symbol: string) {
     meta,
     quote: snap.quotes.get(meta.symbol)!,
     fundamentals: snap.fundamentals.get(meta.symbol)!,
-    technicals: computeTechnicals(bars),
+    technicals: withRealTechnicals(meta.symbol, snap.quotes.get(meta.symbol)!, computeTechnicals(bars)),
     bars,
   };
 }
@@ -51,7 +60,7 @@ export function getScreenerRows(): ScreenerRow[] {
     ...meta,
     ...snap.quotes.get(meta.symbol)!,
     ...snap.fundamentals.get(meta.symbol)!,
-    ...computeTechnicals(snap.bars.get(meta.symbol)!),
+    ...withRealTechnicals(meta.symbol, snap.quotes.get(meta.symbol)!, computeTechnicals(snap.bars.get(meta.symbol)!)),
   }));
 }
 
